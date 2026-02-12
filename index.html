@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CatStego — Stéganographie par chats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="phone-wrapper">
+<div class="phone-frame">
+
+<!-- ════════════════════════════════════════ -->
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- SCREEN 1: HOME -->
+<div class="screen active" id="screen-home">
+  <div class="home-bg"></div>
+  <div class="status-bar">
+    <span class="time" id="clock">9:41</span>
+    <div class="status-icons">
+      <div class="status-dot"></div>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <rect x="0" y="6" width="3" height="6" rx="1" fill="#94A3B8"/>
+        <rect x="4.5" y="4" width="3" height="8" rx="1" fill="#94A3B8"/>
+        <rect x="9" y="1.5" width="3" height="10.5" rx="1" fill="#94A3B8"/>
+        <rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="#94A3B8"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#94A3B8"/>
+        <rect x="2" y="2" width="14" height="8" rx="2" fill="#94A3B8"/>
+        <path d="M23 4.5V7.5C23.8 7.2 24.5 6.6 24.5 6C24.5 5.4 23.8 4.8 23 4.5Z" fill="#94A3B8"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="screen-content">
+    <div class="home-center">
+      <div class="logo-wrap">
+        <span class="logo-svg">🐱</span>
+      </div>
+      <div class="app-name">CatStego</div>
+      <div class="app-tagline">Cachez vos secrets dans<br>des photos de chats 🐾</div>
+
+      <div class="home-cat-container">
+        <img id="home-cat-img" src="assets/images/chats.gif" alt="Chat décoratif" onerror="this.style.display='none'">
+      </div>
+    </div>
+
+    <div class="action-cards">
+      <div class="action-card" onclick="goTo('screen-encode')">
+        <div class="card-icon-wrap card-icon-encode">🔒</div>
+        <div class="card-text">
+          <div class="card-title">Cacher un message</div>
+          <div class="card-subtitle">Encodez dans un chat aléatoire</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+
+      <div class="action-card" onclick="goTo('screen-decode')">
+        <div class="card-icon-wrap card-icon-decode">🔓</div>
+        <div class="card-text">
+          <div class="card-title">Révéler un message</div>
+          <div class="card-subtitle">Décodez depuis une photo de chat</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- SCREEN 2: ENCODE -->
+<div class="screen" id="screen-encode">
+  <div class="status-bar">
+    <span class="time" id="clock-enc">9:41</span>
+    <div class="status-icons">
+      <div class="status-dot"></div>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="6" width="3" height="6" rx="1" fill="#94A3B8"/><rect x="4.5" y="4" width="3" height="8" rx="1" fill="#94A3B8"/><rect x="9" y="1.5" width="3" height="10.5" rx="1" fill="#94A3B8"/><rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="#94A3B8"/></svg>
+    </div>
+  </div>
+
+  <div class="nav-bar">
+    <div class="back-btn" onclick="goTo('screen-home')">‹</div>
+    <div class="nav-title">Cacher un message</div>
+    <div class="nav-badge badge-encode">🔒</div>
+  </div>
+
+  <div class="screen-content">
+
+    <!-- SECTION 1: Cat selection -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title">Choisir un chat 🐱</div>
+      </div>
+
+      <button class="cat-refresh-btn" id="refresh-cats-btn" onclick="loadCatGallery()">
+        <span>🐱</span> Générer de nouveaux chats
+      </button>
+
+      <div class="carousel-wrap">
+        <div class="carousel" id="cat-carousel">
+          <!-- Skeletons -->
+          <div class="cat-thumb skeleton" style="height:72px"></div>
+          <div class="cat-thumb skeleton" style="height:72px"></div>
+          <div class="cat-thumb skeleton" style="height:72px"></div>
+          <div class="cat-thumb skeleton" style="height:72px"></div>
+          <div class="cat-thumb skeleton" style="height:72px"></div>
+          <div class="cat-thumb skeleton" style="height:72px"></div>
+        </div>
+      </div>
+
+      <div class="cat-preview-box" id="cat-preview-box">
+        <div class="cat-placeholder">
+          <div class="cat-placeholder-icon">🐱</div>
+          <div class="cat-placeholder-text">Sélectionnez un chat dans la galerie</div>
+        </div>
+        <img id="cat-preview-img" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+        <div class="cat-preview-overlay" id="cat-preview-overlay" style="display:none">
+          <div class="cat-preview-info" id="cat-preview-info">1920×1080 · PNG</div>
+          <div class="capacity-badge" id="cat-capacity-badge">≈ 0 car.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SECTION 2: Message -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title">Message secret</div>
+      </div>
+
+      <div class="input-wrap">
+        <textarea
+          class="text-input message-textarea"
+          id="encode-message"
+          placeholder="Entrez votre message secret ici..."
+          oninput="updateCharCounter()"
+          maxlength="99999"
+        ></textarea>
+      </div>
+
+      <div class="char-counter-wrap">
+        <div class="char-counter-row">
+          <span class="char-counter-text" id="char-used">0</span>
+          <span class="char-counter-text" id="char-total">/ sélectionnez un chat</span>
+        </div>
+        <div class="capacity-fill-bar">
+          <div class="capacity-fill" id="capacity-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SECTION 3: Key -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-title">Clé de sécurité 🔑</div>
+      </div>
+
+      <div class="key-input-wrap input-wrap">
+        <span class="key-input-icon">🔒</span>
+        <input
+          type="password"
+          class="text-input key-input"
+          id="encode-key"
+          placeholder="Clé secrète..."
+          oninput="updateKeyStrength()"
+          autocomplete="new-password"
+        >
+        <button class="key-toggle-btn" onclick="toggleKeyVis('encode-key', this)">👁</button>
+      </div>
+
+      <div class="easter-egg" id="meow-egg">🐱 MEOW! 🐾✨🎉✨🐾 MEOW! 🐱</div>
+
+      <div class="strength-wrap" id="strength-wrap">
+        <div class="strength-row">
+          <div class="strength-bars" id="strength-bars">
+            <div class="strength-bar" id="sb1"></div>
+            <div class="strength-bar" id="sb2"></div>
+            <div class="strength-bar" id="sb3"></div>
+            <div class="strength-bar" id="sb4"></div>
+          </div>
+          <div class="strength-label" id="strength-label" style="color:var(--text-muted)">—</div>
+        </div>
+      </div>
+
+      <div class="hint hint-warning">⚠️ Sans cette clé, le message sera irrécupérable</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SECTION 4: Action -->
+    <div class="section-block">
+      <button class="primary-btn" id="encode-btn" onclick="doEncode()">
+        🐱 Encoder et Sauvegarder
+      </button>
+
+      <div class="progress-wrap" id="encode-progress" style="margin-top:12px">
+        <div class="progress-label">
+          <span class="paw-spinner">🐾</span>
+          <span id="encode-progress-text">Le chat cache votre message...</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill animated" id="encode-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="result-card result-success" id="encode-result-success" style="margin-top:12px">
+        <div class="check-circle">✓</div>
+        <div class="result-header">✅ Message caché avec succès !</div>
+        <div class="result-message" id="encode-success-msg">Image sauvegardée. Partagez ce chat innocent pour transmettre votre secret 🐱</div>
+        <button class="secondary-btn" style="margin-top:10px" onclick="downloadEncodedImg()">
+          💾 Télécharger l'image
+        </button>
+      </div>
+      <div class="result-card result-error" id="encode-result-error" style="margin-top:12px">
+        <div class="result-header">❌ Erreur</div>
+        <div class="result-message" id="encode-error-msg">Une erreur est survenue.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- SCREEN 3: DECODE -->
+<div class="screen" id="screen-decode">
+  <div class="status-bar">
+    <span class="time" id="clock-dec">9:41</span>
+    <div class="status-icons">
+      <div class="status-dot"></div>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="6" width="3" height="6" rx="1" fill="#94A3B8"/><rect x="4.5" y="4" width="3" height="8" rx="1" fill="#94A3B8"/><rect x="9" y="1.5" width="3" height="10.5" rx="1" fill="#94A3B8"/><rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="#94A3B8"/></svg>
+    </div>
+  </div>
+
+  <div class="nav-bar">
+    <div class="back-btn" onclick="goTo('screen-home')">‹</div>
+    <div class="nav-title">Révéler un message</div>
+    <div class="nav-badge badge-decode">🔓</div>
+  </div>
+
+  <div class="screen-content">
+
+    <!-- SECTION 1: Image pick -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title">Photo de chat encodée</div>
+      </div>
+
+      <div class="gallery-pick" id="gallery-pick" onclick="triggerFilePick()">
+        <div class="gallery-pick-icon">🖼</div>
+        <div class="gallery-pick-text">Choisir depuis la galerie</div>
+        <div class="gallery-pick-sub">Sélectionnez une photo de chat CatStego</div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFilePick(event)">
+
+      <div class="decode-preview" id="decode-preview">
+        <img id="decode-preview-img" src="" alt="">
+        <div class="scan-overlay" id="scan-overlay">
+          <div class="scan-line"></div>
+        </div>
+      </div>
+
+      <div class="hint" id="decode-hint" style="display:none">
+        <span>🐱</span> <span id="decode-img-info">Image chargée</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SECTION 2: Key -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title">Clé de sécurité 🔑</div>
+      </div>
+
+      <div class="key-input-wrap input-wrap">
+        <span class="key-input-icon">🔒</span>
+        <input
+          type="password"
+          class="text-input key-input"
+          id="decode-key"
+          placeholder="Clé secrète..."
+          autocomplete="off"
+        >
+        <button class="key-toggle-btn" onclick="toggleKeyVis('decode-key', this)">👁</button>
+      </div>
+      <div class="hint">🔑 La clé doit être identique à celle utilisée lors de l'encodage</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SECTION 3: Action -->
+    <div class="section-block">
+      <button class="primary-btn" id="decode-btn" onclick="doDecode()">
+        🔍 Décoder le message
+      </button>
+
+      <div class="progress-wrap" id="decode-progress" style="margin-top:12px">
+        <div class="progress-label">
+          <span class="paw-spinner">🐾</span>
+          <span>Analyse des pixels...</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill animated" id="decode-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="result-card result-success" id="decode-result-success" style="margin-top:12px">
+        <div class="result-header">✅ Message révélé !</div>
+        <div class="decoded-message-box" id="decoded-msg-text">...</div>
+        <button class="copy-btn" id="copy-btn" onclick="copyDecoded()">📋 Copier</button>
+      </div>
+      <div class="result-card result-error" id="decode-result-error" style="margin-top:12px">
+        <div class="result-header" id="decode-error-title">❌ Erreur</div>
+        <div class="result-message" id="decode-error-msg">—</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /phone-frame -->
+</div><!-- /phone-wrapper -->
+
+<!-- ════════════════════════════════════════ -->
+<!-- HIDDEN CANVAS FOR LSB OPS -->
+<canvas id="work-canvas" style="display:none"></canvas>
+
+<script src="assets/js/script.js"></script>
+</body>
+</html>
