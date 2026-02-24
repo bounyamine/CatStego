@@ -1,0 +1,4 @@
+stegano
+pillow
+numpy
+pandas
